@@ -1,12 +1,11 @@
-from scanner import Scanner
+from parser2 import Parser2
 
 
 def main():
     fh = open("text.txt", "r")
     data = fh.read()
-    my_scanner = Scanner()
-    for token in my_scanner.scan(data):
-        print("(%d, %d): %s(%s)" % (token.lineno, token.lexpos, token.type, token.value))
+    my_parser = Parser2()
+    print(my_parser.parse("a=3;"))
 
 
 main()

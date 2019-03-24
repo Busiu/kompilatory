@@ -1,7 +1,6 @@
 import ply.lex as lex
 
 # TODO zamienić floata na takiego jak trzeba
-# TODO if/else/while/etc zamienić na jedną tablicę reserved
 
 
 class Scanner(object):
@@ -14,6 +13,10 @@ class Scanner(object):
         'SUBASSIGN',
         'MULASSIGN',
         'DIVASSIGN',
+        'DOTADDASSIGN',
+        'DOTSUBASSIGN',
+        'DOTMULASSIGN',
+        'DOTDIVASSIGN',
         'LEQ',
         'GEQ',
         'NEQ',
@@ -28,6 +31,7 @@ class Scanner(object):
         'ONES',
         'ZEROS',
         'EYE',
+        'TRANSPOSE',
         'PRINT',
         'FLOAT',
         'INTEGER',
@@ -35,7 +39,7 @@ class Scanner(object):
         'ID',
         'COMMENT'
         )
-    literals = "+-*/=<>()[]{}:',;_#"
+    literals = "+-*/=<>()[]{}:,;_#"
 
     t_DOTADD = r'\.\+'
     t_DOTSUB = r'\.-'
@@ -45,6 +49,11 @@ class Scanner(object):
     t_SUBASSIGN = r'-='
     t_MULASSIGN = r'\*='
     t_DIVASSIGN = r'/='
+    t_DOTADDASSIGN = r'\.\+='
+    t_DOTSUBASSIGN = r'\.-='
+    t_DOTMULASSIGN = r'\.\*='
+    t_DOTDIVASSIGN = r'\./='
+    t_TRANSPOSE = r'.T'
     t_LEQ = r'<='
     t_GEQ = r'>='
     t_NEQ = r'!='
@@ -81,6 +90,7 @@ class Scanner(object):
 
     def t_ID(self, t):
         r'[a-z_A-Z]\w*'
+        t.type = self.reserved.get(t.value, 'ID')
         return t
 
     def t_COMMENT(self, t):
@@ -100,5 +110,5 @@ class Scanner(object):
 
     def scan(self, data):
         self.lexer.input(data)
-        for token in self.lexer:
-            yield token
+        return self.lexer.lextokens
+
