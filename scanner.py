@@ -74,6 +74,11 @@ class Scanner(object):
         'print': 'PRINT'
     }
 
+    def t_ID(self, t):
+        r'[a-z_A-Z]\w*'
+        t.type = self.reserved.get(t.value, 'ID')
+        return t
+
     def t_FLOAT(self, t):
         r'([0-9]*[.])[0-9]+'
         t.value = float(t.value)
@@ -85,12 +90,7 @@ class Scanner(object):
         return t
 
     def t_STRING(self, t):
-        r'".*"'
-        return t
-
-    def t_ID(self, t):
-        r'[a-z_A-Z]\w*'
-        t.type = self.reserved.get(t.value, 'ID')
+        '\".*\"'
         return t
 
     def t_COMMENT(self, t):

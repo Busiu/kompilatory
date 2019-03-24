@@ -4,6 +4,16 @@ import ply.yacc as yacc
 from scanner import Scanner
 
 
+class Node:
+    def __init__(self, type, children=None, leaf=None):
+        self.type = type
+        if children:
+            self.children = children
+        else:
+            self.children = []
+        self.leaf = leaf
+
+
 class Parser2(object):
 
     tokens = Scanner.tokens
@@ -18,20 +28,17 @@ class Parser2(object):
         # to fill ...
     )
 
-    def p_error(self, p):
-        if p:
-            print("Syntax error at line {0}: LexToken({1}, '{2}')".format(p.lineno, p.type, p.value))
-        else:
-            print("Unexpected end of input")
-
     def p_program(self, p):
         """program : instructions"""
-        return p
+#        p[0] = Node("Program", [p[1]])
 
     def p_instructions(self, p):
         """instructions : instruction
                         | instruction instructions"""
-        return p
+#       if(len(p) == 2):
+#           p[0] = Node("Instructions", [p[1]])
+#       else:
+#           p[0] = Node("Instructions", [p[1], p[2]])
 
     def p_instruction(self, p):
         """instruction : assignment ';'
@@ -40,6 +47,8 @@ class Parser2(object):
                        | CONTINUE ';'
                        | RETURN ';'
                        | prt ';' """
+#        if(len(p) == 3)
+#            p[0] = Node("Instructions")
 
     def p_assignment(self, p):
         """assignment : ID '=' rvalue
@@ -51,7 +60,27 @@ class Parser2(object):
                       | ID SUBASSIGN rvalue
                       | ID MULASSIGN rvalue
                       | ID DIVASSIGN rvalue"""
-        return p[3]
+#        if p[2] == '=':
+#            p[1] = p[3]
+#        elif p[2] == '.+=':
+#            p[1] += p[3]
+#        elif p[2] == '.-=':
+#            p[1] -= p[3]
+#        elif p[2] == '.*=':
+#            p[1] *= p[3]
+#        elif p[2] == './=':
+#            p[1] /= p[3]
+#        elif p[2] == '+=':
+#           p[1] += p[3]
+#        elif p[2] == '-=':
+#            p[1] -= p[3]
+#        elif p[2] == '*=':
+#            p[1] *= p[3]
+#        elif p[2] == '/=':
+#            p[1] /= p[3]
+#        else:
+#            raise AssertionError('Unknown operator: {}'.format(p[2]))
+#        p[0] = p[1]
 
     def p_conditional(self, p):
         """conditional : IF '(' logexpr ')' '{' instructions '}'
@@ -74,7 +103,7 @@ class Parser2(object):
                   | matrix
                   | logexpr
                   | STRING"""
-        p[0] = p[1]
+#        p[0] = p[1]
 
     def p_forexpr(self, p):
         """forexpr : matrix
@@ -88,7 +117,7 @@ class Parser2(object):
                   | ONES '(' numexpr ')'
                   | EYE '(' numexpr ')'
                   | matrix TRANSPOSE
-                  | ID """
+                  | ID"""
 
     def p_logexpr(self, p):
         """logexpr : numexpr EQ numexpr
@@ -98,21 +127,21 @@ class Parser2(object):
                    | numexpr '>' numexpr
                    | numexpr '<' numexpr
                    | ID"""
-        if p[2] == '==':
-            value = (p[1] == p[3])
-        elif p[2] == '>=':
-            value = (p[1] >= p[3])
-        elif p[2] == '<=':
-            value = (p[1] <= p[3])
-        elif p[2] == '!=':
-            value = (p[1] != p[3])
-        elif p[2] == '>':
-            value = (p[1] > p[3])
-        elif p[2] == '<':
-            value = (p[1] < p[3])
-        else:
-            raise AssertionError('Unknown operator: {}'.format(p[2]))
-        p[0] = value
+#        if p[2] == '==':
+#            value = (p[1] == p[3])
+#        elif p[2] == '>=':
+#            value = (p[1] >= p[3])
+#        elif p[2] == '<=':
+#            value = (p[1] <= p[3])
+#        elif p[2] == '!=':
+#            value = (p[1] != p[3])
+#        elif p[2] == '>':
+#            value = (p[1] > p[3])
+#        elif p[2] == '<':
+#            value = (p[1] < p[3])
+#        else:
+#            raise AssertionError('Unknown operator: {}'.format(p[2]))
+#        p[0] = value
 
     def p_numexpr(self, p):
         """numexpr : numexpr '+' numexpr
@@ -127,24 +156,32 @@ class Parser2(object):
                    | '-' numexpr
                    | INTEGER
                    | FLOAT
+                   | matrix
                    | ID"""
-        if len(p) == 2:
-            value = p[1]
-        elif p[2] == '+':
-            value = p[1] + p[3]
-        elif p[2] == '-':
-            value = p[1] - p[3]
-        elif p[2] == '*':
-            value = p[1] * p[3]
-        elif p[2] == '/':
-            value = p[1] / p[3]
-        elif p[1] == '(' and p[3] == ')':
-            value = p[2]
-        elif p[1] == '-':
-            value = -p[2]
+#        if len(p) == 2:
+#            value = p[1]
+#        elif p[2] == '+':
+#            value = p[1] + p[3]
+#        elif p[2] == '-':
+#            value = p[1] - p[3]
+#        elif p[2] == '*':
+#            value = p[1] * p[3]
+#        elif p[2] == '/':
+#            value = p[1] / p[3]
+#        elif p[1] == '(' and p[3] == ')':
+#            value = p[2]
+#        elif p[1] == '-':
+#            value = -p[2]
+#        else:
+#            raise AssertionError('Unknown operator: {}'.format(p[2]))
+#        p[0] = value
+
+    def p_error(self, p):
+        if p:
+            print(p)
+            print("Syntax error at line {0}: LexToken({1}, '{2}')".format(p.lineno, p.type, p.value))
         else:
-            raise AssertionError('Unknown operator: {}'.format(p[2]))
-        p[0] = value
+            print("Unexpected end of input")
 
     def __init__(self):
         self.lexer = Scanner()
