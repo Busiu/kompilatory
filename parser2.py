@@ -20,21 +20,25 @@ class Parser2(object):
 
     precedence = (
         # to fill ...
+        ("left", '<', '>', 'EQ', 'LEQ', 'GEQ', 'NEQ'),
         ("left", '=', 'ADDASSIGN', 'SUBASSIGN', 'MULASSIGN', 'DIVASSIGN', 'DOTADDASSIGN', 'DOTSUBASSIGN',
             'DOTMULASSIGN', 'DOTDIVASSIGN'),
-        ("left", '+', '-'),
-        ("left", '*', '/'),
-        ("left", 'TRANSPOSE')
+        ("left", '+', '-', 'DOTADD', 'DOTSUB'),
+        ("left", '*', '/', 'DOTMUL', 'DOTDIV'),
+        ("left", 'TRANSPOSE'),
+        ("left", '[', ']', '('),
+        ("left", '{', '}', 'BREAK', 'CONTINUE', 'RETURN', 'PRINT', 'WHILE',
+         'FOR', 'ONES', 'ZEROS', 'EYE', 'IF', 'ELSE'),
+        ("left", ';', ',')
         # to fill ...
     )
-
     def p_program(self, p):
         """program : instructions"""
 #        p[0] = Node("Program", [p[1]])
 
     def p_instructions(self, p):
-        """instructions : instruction
-                        | instruction instructions
+        """instructions : instruction instructions
+                        | instruction
                         | '{' instructions '}'"""
 #       if(len(p) == 2):
 #           p[0] = Node("Instructions", [p[1]])
@@ -46,8 +50,9 @@ class Parser2(object):
                         | conditional
                         | BREAK ';'
                         | CONTINUE ';'
-                        | return
-                        | prt ';' """
+                        | RETURN rvalue ';'
+                        | RETURN ';'
+                        | PRINT '(' prtvalues ')' ';' """
 #        if(len(p) == 3)
 #            p[0] = Node("Instructions")
 
@@ -88,47 +93,40 @@ class Parser2(object):
                     | matrixelem"""
 
     def p_matrixelem(self, p):
-        """matrixelem   : ID '[' INTEGER ',' INTEGER ']'"""
+        """matrixelem   : ID '[' numexpr ',' numexpr ']'"""
 
     def p_conditional(self, p):
-        """conditional  : IF '(' logexpr ')' '{' instructions '}'
-                        | IF '(' logexpr ')' instruction
-                        | IF '(' logexpr ')' '{' instructions '}' ELSE '{' instructions '}'
-                        | IF '(' logexpr ')' instruction ELSE '{' instructions '}'
-                        | IF '(' logexpr ')' '{' instructions '}' ELSE instruction
-                        | IF '(' logexpr ')' instruction ELSE instruction
-                        | FOR '(' forexpr ')' '{' instructions '}'
-                        | FOR '(' forexpr ')' instructions
-                        | WHILE '(' logexpr ')' '{' instructions '}'
-                        | WHILE '(' logexpr ')' instruction """
+        """conditional  : IF '(' cond ')' block
+                        | IF '(' cond ')' block ELSE block
+                        | FOR '(' forexpr ')' block
+                        | WHILE '(' cond ')' block"""
 
-    def p_prt(self, p):
-        """prt  : PRINT '(' prtvalues ')'"""
+    def p_cond(self, p):
+        """cond : logexpr
+                | ID"""
+
+    def p_block(self, p):
+        """block : instruction
+                 | '{' instructions '}' """
 
     def p_prtvalues(self, p):
-        """prtvalues    : prtvalue ',' prtvalues
-                        | prtvalue"""
-
-    def p_prtvalue(self, p):
-        """prtvalue : ID
-                    | rvalue"""
+        """prtvalues    : rvalue ',' prtvalues
+                        | rvalue"""
 
     def p_rvalue(self, p):
         """rvalue   : numexpr
                     | matrix
                     | logexpr
-                    | STRING"""
+                    | STRING
+                    | ID"""
 #        p[0] = p[1]
 
     def p_forexpr(self, p):
-        """forexpr  : ID '=' INTEGER ':' INTEGER
-                    | ID '=' ID ':' INTEGER
-                    | ID '=' INTEGER ':' ID
-                    | ID '=' ID ':' ID"""
+        """forexpr  : ID '=' matrix"""
 
     def p_matrix(self, p):
         """matrix   : numexpr ':' numexpr
-                    | '[' row ';' rows ']'
+                    | '[' rows ']'
                     | '(' matrix ')'
                     | ZEROS '(' numexpr ')'
                     | ONES '(' numexpr ')'
@@ -137,19 +135,12 @@ class Parser2(object):
                     | ID"""
 
     def p_rows(self, p):
-        """rows : row ';' rows
-                | row"""
-
-    def p_row(self, p):
-        """row  : rowelems"""
+        """rows : rowelems ';' rows
+                | rowelems"""
 
     def p_rowelems(self, p):
-        """rowelems : rowelem ',' rowelems
-                    | rowelem"""
-
-    def p_rowelem(self, p):
-        """rowelem  : INTEGER
-                    | FLOAT"""
+        """rowelems : rvalue ',' rowelems
+                    | rvalue"""
 
     def p_logexpr(self, p):
         """logexpr  : numexpr EQ numexpr
@@ -157,8 +148,7 @@ class Parser2(object):
                     | numexpr LEQ numexpr
                     | numexpr NEQ numexpr
                     | numexpr '>' numexpr
-                    | numexpr '<' numexpr
-                    | ID"""
+                    | numexpr '<' numexpr"""
 #        if p[2] == '==':
 #            value = (p[1] == p[3])
 #        elif p[2] == '>=':
@@ -208,14 +198,6 @@ class Parser2(object):
 #            raise AssertionError('Unknown operator: {}'.format(p[2]))
 #        p[0] = value
 
-    def p_return(self, p):
-        """return   : RETURN ';'
-                    | RETURN variable ';'
-                    | RETURN INTEGER ';'
-                    | RETURN FLOAT ';'
-                    | RETURN STRING ';'
-                    | RETURN logexpr"""
-
     def p_error(self, p):
         if p:
             print(p)
@@ -226,7 +208,6 @@ class Parser2(object):
     def __init__(self):
         self.lexer = Scanner()
         self.parser = yacc.yacc(module=self)
-
 
     def parse(self, data):
         return self.parser.parse(data)
