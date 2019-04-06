@@ -1,12 +1,13 @@
 from __future__ import print_function
 import AST
 
-indent_char = '|'
+indent_char = '| '
+
 
 def addToClass(cls):
 
     def decorator(func):
-        setattr(cls,func.__name__,func)
+        setattr(cls, func.__name__, func)
         return func
     return decorator
 
@@ -14,6 +15,13 @@ def addToClass(cls):
 def print_with_str(val, indent):
     if isinstance(val, str):
         return indent * indent_char + val
+    if isinstance(val, list):
+        ret = ""
+        for (i, v) in enumerate(val):
+            if i != 0:
+                ret += '\n'
+            ret += print_with_str(v, indent)
+        return ret
     else:
         return val.print_tree(indent)
 
@@ -61,17 +69,79 @@ class TreePrinter:
     def print_tree(self, indent=0):
         return print_with_str(self.val, indent)
 
+    # TODO
+    @addToClass(AST.MatrixElem)
+    def print_tree(self, indent=0):
+        return print_with_str(self.val, indent)
+
+    # TODO
+    @addToClass(AST.Conditional)
+    def print_tree(self, indent=0):
+        return print_with_str(self.val, indent)
+
+    # TODO
+    @addToClass(AST.Cond)
+    def print_tree(self, indent=0):
+        return print_with_str(self.val, indent)
+
+    # TODO
+    @addToClass(AST.Block)
+    def print_tree(self, indent=0):
+        return print_with_str(self.val, indent)
+
+    @addToClass(AST.PtrValues)
+    def print_tree(self, indent=0):
+        return print_with_str(self.vals, indent)
+
     @addToClass(AST.Rvalue)
     def print_tree(self, indent=0):
         return print_with_str(self.val, indent)
 
+    # TODO
+    @addToClass(AST.ForExpr)
+    def print_tree(self, indent=0):
+        return print_with_str(self.val, indent)
+
+    @addToClass(AST.Matrix)
+    def print_tree(self, indent=0):
+        if self.fun is None:
+            return print_with_str(self.val, indent)
+        ret = print_with_str(self.fun, indent)
+        ret += '\n'
+        ret += print_with_str(self.val, indent + 1)
+        if self.val2 is not None:
+            ret += '\n'
+            ret += print_with_str(self.val2, indent + 1)
+        return ret
+
+    # TODO
+    @addToClass(AST.Rows)
+    def print_tree(self, indent=0):
+        return print_with_str(self.val, indent)
+
+    # TODO
+    @addToClass(AST.RowElems)
+    def print_tree(self, indent=0):
+        return print_with_str(self.val, indent)
+
+    # TODO
+    @addToClass(AST.LogExpr)
+    def print_tree(self, indent=0):
+        return print_with_str(self.val, indent)
+
+    @addToClass(AST.NumExpr)
+    def print_tree(self, indent=0):
+        if self.op is None:
+            return print_with_str(self.val1, indent)
+        ret = print_with_str(self.op, indent)
+        ret += '\n'
+        ret += print_with_str(self.val1, indent + 1)
+        if self.val2 is not None:
+            ret += '\n'
+            ret += print_with_str(self.val2, indent + 1)
+        return ret
+
+    # TODO
     @addToClass(AST.Error)
     def print_tree(self, indent=0):
         return "error"
-        # fill in the body
-
-
-    # define printTree for other classes
-    # ...
-
-

@@ -34,13 +34,68 @@ class Variable(Node):
         self.val = val
 
 
+class MatrixElem(Node):
+    def __init__(self, val):
+        self.val = val
+
+
+class Conditional(Node):
+    def __init__(self, val):
+        self.val = val
+
+
+class Cond(Node):
+    def __init__(self, val):
+        self.val = val
+
+
+class Block(Node):
+    def __init__(self, val):
+        self.val = val
+
+
+class PtrValues(Node):
+    def __init__(self, vals):
+        self.vals = vals
+
+
 class Rvalue(Node):
     def __init__(self, val):
         self.val = val
 
-# ...
-# fill out missing classes
-# ...
+
+class ForExpr(Node):
+    def __init__(self, val):
+        self.val = val
+
+
+class Matrix(Node):
+    def __init__(self, val, fun, val2):
+        self.val = val
+        self.val2 = val2
+        self.fun = fun
+
+
+class Rows(Node):
+    def __init__(self, val):
+        self.val = val
+
+
+class RowElems(Node):
+    def __init__(self, val):
+        self.val = val
+
+
+class LogExpr(Node):
+    def __init__(self, val):
+        self.val = val
+
+
+class NumExpr(Node):
+    def __init__(self, val1, op, val2):
+        self.val1 = val1
+        self.op = op
+        self.val2 = val2
 
 
 class Error(Node):

@@ -101,6 +101,10 @@ class Parser2(object):
     def p_prtvalues(self, p):
         """prtvalues    : rvalue ',' prtvalues
                         | rvalue"""
+        if len(p) == 2:
+            p[0] = AST.PtrValues([p[1]])
+        else:
+            p[0] = AST.PtrValues([p[1]] + p[3].vals)
 
     def p_rvalue(self, p):
         """rvalue   : numexpr
@@ -122,6 +126,15 @@ class Parser2(object):
                     | EYE '(' numexpr ')'
                     | matrix TRANSPOSE
                     | ID"""
+        if len(p) == 3:
+            if p[2] == ':':
+                p[0] = AST.Matrix(p[1], p[2], p[3])
+            else:
+                p[0] = AST.Matrix(p[2], 'VECTOR', None)
+        if len(p) == 4:
+            p[0] = AST.Matrix(p[3], p[1], None)
+        else:
+            p[0] = AST.Matrix(p[1], None, None)
 
     def p_rows(self, p):
         """rows : rowelems ';' rows
@@ -165,27 +178,19 @@ class Parser2(object):
                     | numexpr DOTDIV numexpr
                     | '(' numexpr ')'
                     | '-' numexpr
+                    | ID
                     | INTEGER
                     | FLOAT
-                    | matrix
-                    | ID"""
-#        if len(p) == 2:
-#            value = p[1]
-#        elif p[2] == '+':
-#            value = p[1] + p[3]
-#        elif p[2] == '-':
-#            value = p[1] - p[3]
-#        elif p[2] == '*':
-#            value = p[1] * p[3]
-#        elif p[2] == '/':
-#            value = p[1] / p[3]
-#        elif p[1] == '(' and p[3] == ')':
-#            value = p[2]
-#        elif p[1] == '-':
-#            value = -p[2]
-#        else:
-#            raise AssertionError('Unknown operator: {}'.format(p[2]))
-#        p[0] = value
+                    | matrix"""
+        if len(p) == 4:
+            if p[1] == '(':
+                p[0] = AST.NumExpr(p[2], None, None)  # '(' numexpr ')'
+            else:
+                p[0] = AST.NumExpr(p[1], p[2], p[3])  # numexpr op numexpr
+        elif len(p) == 3:
+            p[0] = AST.NumExpr(p[2], p[1], None)  # -numexpr
+        else:
+            p[0] = AST.NumExpr(p[1], None, None)  # numexpr
 
     def p_error(self, p):
         if p:
