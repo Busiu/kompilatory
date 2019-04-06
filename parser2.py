@@ -1,5 +1,6 @@
 #!/usr/bin/python
 
+import AST
 import ply.yacc as yacc
 from scanner import Scanner
 
@@ -34,16 +35,19 @@ class Parser2(object):
     )
     def p_program(self, p):
         """program : instructions"""
-#        p[0] = Node("Program", [p[1]])
+        p[0] = AST.Program(p[1])
 
     def p_instructions(self, p):
         """instructions : instruction instructions
                         | instruction
                         | '{' instructions '}'"""
-#       if(len(p) == 2):
-#           p[0] = Node("Instructions", [p[1]])
-#       else:
-#           p[0] = Node("Instructions", [p[1], p[2]])
+        if len(p) == 3:
+            p[0] = AST.Instructions(p[1], p[2])
+        elif len(p) == 2:
+            p[0] = AST.Instructions(p[1], None)
+        else:
+            p[0] = AST.Instructions(p[2], None)
+
 
     def p_instruction(self, p):
         """instruction  : assignment ';'
@@ -53,8 +57,12 @@ class Parser2(object):
                         | RETURN rvalue ';'
                         | RETURN ';'
                         | PRINT '(' prtvalues ')' ';' """
-#        if(len(p) == 3)
-#            p[0] = Node("Instructions")
+        if len(p) == 2 or len(p) == 3:
+            p[0] = AST.Instruction(p[1], None)
+        elif len(p) == 4:
+            p[0] = AST.Instruction(p[1], p[2])
+        else:
+            p[0] = AST.Instruction(p[1], p[3])
 
     def p_assignment(self, p):
         """assignment   : variable '=' rvalue
@@ -66,31 +74,12 @@ class Parser2(object):
                         | variable SUBASSIGN rvalue
                         | variable MULASSIGN rvalue
                         | variable DIVASSIGN rvalue"""
-#        if p[2] == '=':
-#            p[1] = p[3]
-#        elif p[2] == '.+=':
-#            p[1] += p[3]
-#        elif p[2] == '.-=':
-#            p[1] -= p[3]
-#        elif p[2] == '.*=':
-#            p[1] *= p[3]
-#        elif p[2] == './=':
-#            p[1] /= p[3]
-#        elif p[2] == '+=':
-#           p[1] += p[3]
-#        elif p[2] == '-=':
-#            p[1] -= p[3]
-#        elif p[2] == '*=':
-#            p[1] *= p[3]
-#        elif p[2] == '/=':
-#            p[1] /= p[3]
-#        else:
-#            raise AssertionError('Unknown operator: {}'.format(p[2]))
-#        p[0] = p[1]
+        p[0] = AST.Assignment(p[1], p[2], p[3])
 
     def p_variable(self, p):
         """variable : ID
                     | matrixelem"""
+        p[0] = AST.Variable(p[1])
 
     def p_matrixelem(self, p):
         """matrixelem   : ID '[' numexpr ',' numexpr ']'"""
@@ -119,7 +108,7 @@ class Parser2(object):
                     | logexpr
                     | STRING
                     | ID"""
-#        p[0] = p[1]
+        p[0] = AST.Rvalue(p[1])
 
     def p_forexpr(self, p):
         """forexpr  : ID '=' matrix"""

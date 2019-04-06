@@ -1,8 +1,8 @@
 from parser2 import Parser2
-
+import TreePrinter
 
 def main():
-    fh = open("Tekscicho 3", "r")
+    fh = open("example2.txt", "r")
     data = fh.read()
     my_parser = Parser2()
     result = my_parser.parse(data)
