@@ -1,0 +1,21 @@
+# control flow instruction
+
+N = a;
+M = b;
+for (i = a:N) {
+    for (j = i:M) {
+        print (i, j);
+    }
+}
+
+while(k>i) {
+    if(k<j)
+        i = b;
+    else if(k<d)
+        i = b;
+    else
+        i = e;
+
+    k = k - d;
+}
+

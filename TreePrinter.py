@@ -84,10 +84,14 @@ class TreePrinter:
     def print_tree(self, indent=0):
         ret = print_with_str(self.condSt, indent)
         ret += '\n'
-        ret += print_with_str(self.conditional, indent)
+        ret += print_with_str(self.conditional, indent + 1)
+        if self.condSt == "if":
+            ret += '\n'
+            ret += print_with_str("then", indent)
         ret += '\n'
         ret += print_with_str(self.block1, indent + 1)
         if self.block2 is not None:
+            ret += '\n'
             ret += print_with_str(self.elseSt, indent)
             ret += '\n'
             ret += print_with_str(self.block2, indent + 1)
@@ -116,6 +120,8 @@ class TreePrinter:
     def print_tree(self, indent=0):
         ret = print_with_str(self.identificator, indent)
         ret += '\n'
+        ret += print_with_str("range", indent)
+        ret += '\n'
         ret += print_with_str(self.val, indent + 1)
         return ret
 
@@ -140,6 +146,8 @@ class TreePrinter:
             ret = print_with_str(self.rowselems, indent)
             ret += '\n'
             ret += print_with_str(self.rows, indent + 1)
+            ret += '\n'
+            ret += print_with_str("LOL", indent + 1)
             return ret
 
     # TODO DONE
