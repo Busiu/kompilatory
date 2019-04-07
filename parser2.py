@@ -83,20 +83,30 @@ class Parser2(object):
 
     def p_matrixelem(self, p):
         """matrixelem   : ID '[' numexpr ',' numexpr ']'"""
+        p[0] = AST.MatrixElem(p[1], p[3], p[5])
 
     def p_conditional(self, p):
         """conditional  : IF '(' cond ')' block
                         | IF '(' cond ')' block ELSE block
                         | FOR '(' forexpr ')' block
                         | WHILE '(' cond ')' block"""
+        if len(p) == 6:
+            p[0] = AST.Conditional(p[1], p[3], p[5], None, None)
+        else:
+            p[0] = AST.Conditional(p[1], p[3], p[5], p[6], p[7])
 
     def p_cond(self, p):
         """cond : logexpr
                 | ID"""
+        p[0] = AST.Cond(p[1])
 
     def p_block(self, p):
         """block : instruction
                  | '{' instructions '}' """
+        if len(p) == 2:
+            p[0] = AST.Block(p[1])
+        else:
+            p[0] = AST.Block(p[2])
 
     def p_prtvalues(self, p):
         """prtvalues    : rvalue ',' prtvalues
@@ -116,6 +126,7 @@ class Parser2(object):
 
     def p_forexpr(self, p):
         """forexpr  : ID '=' matrix"""
+        p[0] = AST.ForExpr(p[1], p[3])
 
     def p_matrix(self, p):
         """matrix   : numexpr ':' numexpr
@@ -139,10 +150,18 @@ class Parser2(object):
     def p_rows(self, p):
         """rows : rowelems ';' rows
                 | rowelems"""
+        if len(p) == 2:
+            p[0] = AST.Rows(p[1], None)
+        else:
+            p[0] = AST.Rows(p[1], p[3])
 
     def p_rowelems(self, p):
         """rowelems : rvalue ',' rowelems
                     | rvalue"""
+        if len(p) == 2:
+            p[0] = AST.Rows(p[1], None)
+        else:
+            p[0] = AST.Rows(p[1], p[3])
 
     def p_logexpr(self, p):
         """logexpr  : numexpr EQ numexpr
@@ -151,6 +170,7 @@ class Parser2(object):
                     | numexpr NEQ numexpr
                     | numexpr '>' numexpr
                     | numexpr '<' numexpr"""
+        p[0] = AST.LogExpr(p[1], p[2], p[3])
 #        if p[2] == '==':
 #            value = (p[1] == p[3])
 #        elif p[2] == '>=':
@@ -198,6 +218,7 @@ class Parser2(object):
             print("Syntax error at line {0}: LexToken({1}, '{2}')".format(p.lineno, p.type, p.value))
         else:
             print("Unexpected end of input")
+        AST.Error()
 
     def __init__(self):
         self.lexer = Scanner()

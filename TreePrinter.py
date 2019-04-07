@@ -69,22 +69,36 @@ class TreePrinter:
     def print_tree(self, indent=0):
         return print_with_str(self.val, indent)
 
-    # TODO
+    # TODO DONE
     @addToClass(AST.MatrixElem)
     def print_tree(self, indent=0):
-        return print_with_str(self.val, indent)
+        ret = print_with_str(self.identificator, indent)
+        ret += '\n'
+        ret += print_with_str(self.val1, indent + 1)
+        ret += '\n'
+        ret += print_with_str(self.val2, indent + 1)
+        return ret
 
-    # TODO
+    # TODO DONE
     @addToClass(AST.Conditional)
     def print_tree(self, indent=0):
-        return print_with_str(self.val, indent)
+        ret = print_with_str(self.condSt, indent)
+        ret += '\n'
+        ret += print_with_str(self.conditional, indent)
+        ret += '\n'
+        ret += print_with_str(self.block1, indent + 1)
+        if self.block2 is not None:
+            ret += print_with_str(self.elseSt, indent)
+            ret += '\n'
+            ret += print_with_str(self.block2, indent + 1)
+        return ret
 
-    # TODO
+    # TODO DONE
     @addToClass(AST.Cond)
     def print_tree(self, indent=0):
         return print_with_str(self.val, indent)
 
-    # TODO
+    # TODO DONE
     @addToClass(AST.Block)
     def print_tree(self, indent=0):
         return print_with_str(self.val, indent)
@@ -97,10 +111,13 @@ class TreePrinter:
     def print_tree(self, indent=0):
         return print_with_str(self.val, indent)
 
-    # TODO
+    # TODO DONE
     @addToClass(AST.ForExpr)
     def print_tree(self, indent=0):
-        return print_with_str(self.val, indent)
+        ret = print_with_str(self.identificator, indent)
+        ret += '\n'
+        ret += print_with_str(self.val, indent + 1)
+        return ret
 
     @addToClass(AST.Matrix)
     def print_tree(self, indent=0):
@@ -114,20 +131,37 @@ class TreePrinter:
             ret += print_with_str(self.val2, indent + 1)
         return ret
 
-    # TODO
+    # TODO DONE
     @addToClass(AST.Rows)
     def print_tree(self, indent=0):
-        return print_with_str(self.val, indent)
+        if self.rows is None:
+            return print_with_str(self.rowselems, indent)
+        else:
+            ret = print_with_str(self.rowselems, indent)
+            ret += '\n'
+            ret += print_with_str(self.rows, indent + 1)
+            return ret
 
-    # TODO
+    # TODO DONE
     @addToClass(AST.RowElems)
     def print_tree(self, indent=0):
-        return print_with_str(self.val, indent)
+        if self.rowelems is None:
+            return print_with_str(self.rvalue, indent)
+        else:
+            ret = print_with_str(self.rvalue, indent)
+            ret += '\n'
+            ret += print_with_str(self.rowelems, indent + 1)
+            return ret
 
-    # TODO
+    # TODO DONE
     @addToClass(AST.LogExpr)
     def print_tree(self, indent=0):
-        return print_with_str(self.val, indent)
+        ret = print_with_str(self.op, indent)
+        ret += '\n'
+        ret += print_with_str(self.expr1, indent + 1)
+        ret += '\n'
+        ret += print_with_str(self.expr2, indent + 1)
+        return ret
 
     @addToClass(AST.NumExpr)
     def print_tree(self, indent=0):
@@ -141,7 +175,7 @@ class TreePrinter:
             ret += print_with_str(self.val2, indent + 1)
         return ret
 
-    # TODO
+    # TODO DONE (Probably)
     @addToClass(AST.Error)
     def print_tree(self, indent=0):
-        return "error"
+        raise Exception("Something went wrong...")
