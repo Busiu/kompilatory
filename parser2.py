@@ -118,6 +118,7 @@ class Parser2(object):
 
     def p_rvalue(self, p):
         """rvalue   : numexpr
+                    | matrixelem
                     | matrix
                     | logexpr
                     | STRING
