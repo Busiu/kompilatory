@@ -26,12 +26,7 @@ class Parser2(object):
             'DOTMULASSIGN', 'DOTDIVASSIGN'),
         ("left", '+', '-', 'DOTADD', 'DOTSUB'),
         ("left", '*', '/', 'DOTMUL', 'DOTDIV'),
-        ("left", 'TRANSPOSE'),
-        ("left", '[', ']', '('),
-        ("left", '{', '}', 'BREAK', 'CONTINUE', 'RETURN', 'PRINT', 'WHILE',
-         'FOR', 'ONES', 'ZEROS', 'EYE', 'IF', 'ELSE'),
-        ("left", ';', ',')
-        # to fill ...
+        ("left", 'TRANSPOSE')
     )
     def p_program(self, p):
         """program : instructions"""
