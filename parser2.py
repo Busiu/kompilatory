@@ -14,16 +14,20 @@ class Node:
             self.children = []
         self.leaf = leaf
 
-
+#TODO numexpr/logexpr/matrix do jednego wora
+#TODO pozbyć się wszystkich warningów
+#TODO matrix -> tylko dwa wymiary
+#TODO forexpr -> tylko jeden wymiar
+#TODO dodać uminus
 class Parser2(object):
 
     tokens = Scanner.tokens
 
     precedence = (
         # to fill ...
-        ("left", '<', '>', 'EQ', 'LEQ', 'GEQ', 'NEQ'),
         ("left", '=', 'ADDASSIGN', 'SUBASSIGN', 'MULASSIGN', 'DIVASSIGN', 'DOTADDASSIGN', 'DOTSUBASSIGN',
-            'DOTMULASSIGN', 'DOTDIVASSIGN'),
+         'DOTMULASSIGN', 'DOTDIVASSIGN'),
+        ("left", '<', '>', 'EQ', 'LEQ', 'GEQ', 'NEQ'),
         ("left", '+', '-', 'DOTADD', 'DOTSUB'),
         ("left", '*', '/', 'DOTMUL', 'DOTDIV'),
         ("left", 'TRANSPOSE')
@@ -145,18 +149,6 @@ class Parser2(object):
         else:
             p[0] = p[1]
 
-
-
-# if len(p) == 3:
-#    if p[2] == ':':
-#        p[0] = AST.Matrix(p[1], p[2], p[3])
-#    else:
-#        p[0] = AST.Matrix(p[2], 'VECTOR', None)
-#if len(p) == 4:
-#    p[0] = AST.Matrix(p[3], p[1], None)
-#else:
-#    p[0] = AST.Matrix(p[1], None, None)
-
     def p_rows(self, p):
         """rows : rowelems ';' rows
                 | rowelems"""
@@ -181,21 +173,6 @@ class Parser2(object):
                     | numexpr '>' numexpr
                     | numexpr '<' numexpr"""
         p[0] = AST.LogExpr(p[1], p[2], p[3])
-#        if p[2] == '==':
-#            value = (p[1] == p[3])
-#        elif p[2] == '>=':
-#            value = (p[1] >= p[3])
-#        elif p[2] == '<=':
-#            value = (p[1] <= p[3])
-#        elif p[2] == '!=':
-#            value = (p[1] != p[3])
-#        elif p[2] == '>':
-#            value = (p[1] > p[3])
-#        elif p[2] == '<':
-#            value = (p[1] < p[3])
-#        else:
-#            raise AssertionError('Unknown operator: {}'.format(p[2]))
-#        p[0] = value
 
     def p_numexpr(self, p):
         """numexpr  : numexpr '+' numexpr
@@ -207,14 +184,14 @@ class Parser2(object):
                     | numexpr DOTMUL numexpr
                     | numexpr DOTDIV numexpr
                     | '(' numexpr ')'
-                    | '-' numexpr
+                    | '-' numexpr %prec UMINUS
                     | ID
                     | INTEGER
                     | FLOAT
                     | matrix"""
         if len(p) == 4:
             if p[1] == '(':
-                p[0] = AST.NumExpr(p[2], None, None)  # '(' numexpr ')'
+                p[0] = p[2] # '(' numexpr ')'
             else:
                 p[0] = AST.NumExpr(p[1], p[2], p[3])  # numexpr op numexpr
         elif len(p) == 3:

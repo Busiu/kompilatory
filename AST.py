@@ -10,7 +10,7 @@ class Program(Node):
 
 
 class Instructions(Node):
-
+    #TODO zamienic na liste
     def __init__(self, instruction, instructions):
         self.instruction = instruction
         self.instructions = instructions
