@@ -125,29 +125,50 @@ class TreePrinter:
         ret += print_with_str(self.val, indent + 1)
         return ret
 
+    #@addToClass(AST.Matrix)
+    #def print_tree(self, indent=0):
+    #    if self.fun is None:
+    #        return print_with_str(self.val, indent)
+    #    ret = print_with_str(self.fun, indent)
+    #    ret += '\n'
+    #    ret += print_with_str(self.val, indent + 1)
+    #    if self.val2 is not None:
+    #        ret += '\n'
+    #        ret += print_with_str(self.val2, indent + 1)
+    #    return ret
+
     @addToClass(AST.Matrix)
     def print_tree(self, indent=0):
-        if self.fun is None:
-            return print_with_str(self.val, indent)
-        ret = print_with_str(self.fun, indent)
-        ret += '\n'
-        ret += print_with_str(self.val, indent + 1)
         if self.val2 is not None:
+            ret = print_with_str(self.val1, indent)
             ret += '\n'
-            ret += print_with_str(self.val2, indent + 1)
-        return ret
+            ret += print_with_str(self.val2, indent)
+            return ret
+        elif(self.fun == "zeros" or self.fun == "ones" or self.fun == "eye" or self.fun == ".T"):
+            ret = print_with_str(self.fun, indent)
+            ret += '\n'
+            ret += print_with_str(self.val1, indent + 1)
+            return ret
+        elif self.fun == '[':
+            ret = print_with_str("VECTOR", indent)
+            ret += '\n'
+            ret += print_with_str(self.val1, indent + 1)
+            return ret
+        else:
+            return print_with_str(self.val1, indent + 1)
 
     # TODO DONE
     @addToClass(AST.Rows)
     def print_tree(self, indent=0):
+        ret = print_with_str("VECTOR", indent)
+        ret += '\n'
         if self.rows is None:
-            return print_with_str(self.rowselems, indent)
+            ret += print_with_str(self.rowelems, indent + 1)
+            return ret
         else:
-            ret = print_with_str(self.rowselems, indent)
+            ret += print_with_str(self.rowelems, indent + 1)
             ret += '\n'
-            ret += print_with_str(self.rows, indent + 1)
-            ret += '\n'
-            ret += print_with_str("LOL", indent + 1)
+            ret += print_with_str(self.rows, indent)
             return ret
 
     # TODO DONE
@@ -158,7 +179,7 @@ class TreePrinter:
         else:
             ret = print_with_str(self.rvalue, indent)
             ret += '\n'
-            ret += print_with_str(self.rowelems, indent + 1)
+            ret += print_with_str(self.rowelems, indent)
             return ret
 
     # TODO DONE

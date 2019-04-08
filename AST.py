@@ -77,10 +77,17 @@ class ForExpr(Node):
 
 
 class Matrix(Node):
-    def __init__(self, val, fun, val2):
-        self.val = val
-        self.val2 = val2
+    def __init__(self, fun, val1, val2):
         self.fun = fun
+        self.val1 = val1
+        self.val2 = val2
+
+
+#class Matrix(Node):
+#    def __init__(self, val, fun, val2):
+#        self.val = val
+#        self.val2 = val2
+#        self.fun = fun
 
 
 class Rows(Node):

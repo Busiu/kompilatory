@@ -1,3 +1,5 @@
 E1 = [ a, b, c;
        f, e, d;
        g, h, i];
+
+E2 = zeros(a);

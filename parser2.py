@@ -137,15 +137,29 @@ class Parser2(object):
                     | EYE '(' numexpr ')'
                     | matrix TRANSPOSE
                     | ID"""
-        if len(p) == 3:
-            if p[2] == ':':
-                p[0] = AST.Matrix(p[1], p[2], p[3])
-            else:
-                p[0] = AST.Matrix(p[2], 'VECTOR', None)
         if len(p) == 4:
-            p[0] = AST.Matrix(p[3], p[1], None)
+            if p[2] == ':':
+                p[0] = AST.Matrix(None, p[1], p[3])
+            else:
+                p[0] = AST.Matrix(p[1], p[2], None)
+        elif len(p) == 5:
+            p[0] = AST.Matrix(p[1], p[3], None)
+        elif len(p) == 3:
+            p[0] = AST.Matrix(p[2], p[1], None)
         else:
-            p[0] = AST.Matrix(p[1], None, None)
+            p[0] = p[1]
+
+
+
+# if len(p) == 3:
+#    if p[2] == ':':
+#        p[0] = AST.Matrix(p[1], p[2], p[3])
+#    else:
+#        p[0] = AST.Matrix(p[2], 'VECTOR', None)
+#if len(p) == 4:
+#    p[0] = AST.Matrix(p[3], p[1], None)
+#else:
+#    p[0] = AST.Matrix(p[1], None, None)
 
     def p_rows(self, p):
         """rows : rowelems ';' rows
@@ -159,9 +173,9 @@ class Parser2(object):
         """rowelems : rvalue ',' rowelems
                     | rvalue"""
         if len(p) == 2:
-            p[0] = AST.Rows(p[1], None)
+            p[0] = AST.RowElems(p[1], None)
         else:
-            p[0] = AST.Rows(p[1], p[3])
+            p[0] = AST.RowElems(p[1], p[3])
 
     def p_logexpr(self, p):
         """logexpr  : numexpr EQ numexpr
