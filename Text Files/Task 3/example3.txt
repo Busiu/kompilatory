@@ -1,6 +1,6 @@
 # control flow instruction
 
-N = a;
+N = 4;
 M = b;
 for (i = a:N) {
     for (j = i:M) {
