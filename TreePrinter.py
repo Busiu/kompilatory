@@ -22,7 +22,7 @@ def print_with_str(val, indent):
                 ret += '\n'
             ret += print_with_str(v, indent)
         return ret
-    if isinstance(val, int):
+    if isinstance(val, (int, float)):
         return indent * indent_char + str(val)
     else:
         return val.print_tree(indent)
