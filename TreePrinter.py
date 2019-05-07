@@ -2,6 +2,7 @@ from __future__ import print_function
 import AST
 
 indent_char = '| '
+reverseSignDict = {'[': ']', '(': ')', '{': '}'}
 
 
 def addToClass(cls):
@@ -122,14 +123,25 @@ class TreePrinter:
         ret += print_with_str(self.val, indent + 1)
         return ret
 
-    @addToClass(AST.Matrix)
+    @addToClass(AST.Expr)
     def print_tree(self, indent=0):
-        if self.val2 is not None:
-            ret = print_with_str(self.val1, indent)
+        if self.val2 is not None and self.fun is not None:
+            ret = print_with_str(self.fun, indent)
             ret += '\n'
-            ret += print_with_str(self.val2, indent)
+            ret += print_with_str(self.val1, indent + 1)
+            ret += '\n'
+            ret += print_with_str(self.val2, indent + 1)
             return ret
-        elif(self.fun == "zeros" or self.fun == "ones" or self.fun == "eye" or self.fun == ".T"):
+        else:
+            ret = print_with_str(self.fun, indent)
+            ret += '\n'
+            ret += print_with_str(self.val1, indent + 1)
+            if self.fun in reverseSignDict.keys():
+                ret += '\n'
+                ret += print_with_str(reverseSignDict[self.fun], indent)
+            return ret
+
+        '''elif(self.fun == "zeros" or self.fun == "ones" or self.fun == "eye" or self.fun == ".T"):
             ret = print_with_str(self.fun, indent)
             ret += '\n'
             ret += print_with_str(self.val1, indent + 1)
@@ -140,7 +152,7 @@ class TreePrinter:
             ret += print_with_str(self.val1, indent + 1)
             return ret
         else:
-            return print_with_str(self.val1, indent + 1)
+            return print_with_str(self.val1, indent + 1)'''
 
     @addToClass(AST.Rows)
     def print_tree(self, indent=0):
@@ -163,27 +175,6 @@ class TreePrinter:
             ret += '\n'
             ret += print_with_str(self.rowelems, indent)
             return ret
-
-    @addToClass(AST.LogExpr)
-    def print_tree(self, indent=0):
-        ret = print_with_str(self.op, indent)
-        ret += '\n'
-        ret += print_with_str(self.expr1, indent + 1)
-        ret += '\n'
-        ret += print_with_str(self.expr2, indent + 1)
-        return ret
-
-    @addToClass(AST.NumExpr)
-    def print_tree(self, indent=0):
-        if self.op is None:
-            return print_with_str(self.val1, indent)
-        ret = print_with_str(self.op, indent)
-        ret += '\n'
-        ret += print_with_str(self.val1, indent + 1)
-        if self.val2 is not None:
-            ret += '\n'
-            ret += print_with_str(self.val2, indent + 1)
-        return ret
 
     @addToClass(AST.Error)
     def print_tree(self, indent=0):

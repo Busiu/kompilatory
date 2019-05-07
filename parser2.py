@@ -5,6 +5,8 @@ import ply.yacc as yacc
 from scanner import Scanner
 
 
+reverseSignDict = {'[': ']', '(': ')', '{': '}'}
+
 class Node:
     def __init__(self, type, children=None, leaf=None):
         self.type = type
@@ -14,11 +16,10 @@ class Node:
             self.children = []
         self.leaf = leaf
 
-#TODO numexpr/logexpr/matrix do jednego wora
 #TODO pozbyć się wszystkich warningów
 #TODO matrix -> tylko dwa wymiary
 #TODO forexpr -> tylko jeden wymiar
-#TODO dodać uminus
+#TODO dodać uminus | '-' expr %prec UMINUS (w EXPR)
 class Parser2(object):
 
     tokens = Scanner.tokens
@@ -81,7 +82,7 @@ class Parser2(object):
         p[0] = AST.Variable(p[1])
 
     def p_matrixelem(self, p):
-        """matrixelem   : ID '[' numexpr ',' numexpr ']'"""
+        """matrixelem   : ID '[' expr ',' expr ']'"""
         p[0] = AST.MatrixElem(p[1], p[3], p[5])
 
     def p_conditional(self, p):
@@ -95,7 +96,7 @@ class Parser2(object):
             p[0] = AST.Conditional(p[1], p[3], p[5], p[6], p[7])
 
     def p_cond(self, p):
-        """cond : logexpr
+        """cond : expr
                 | ID"""
         p[0] = AST.Cond(p[1])
 
@@ -116,38 +117,15 @@ class Parser2(object):
             p[0] = AST.PtrValues([p[1]] + p[3].vals)
 
     def p_rvalue(self, p):
-        """rvalue   : numexpr
+        """rvalue   : expr
                     | matrixelem
-                    | matrix
-                    | logexpr
                     | STRING
                     | ID"""
         p[0] = AST.Rvalue(p[1])
 
     def p_forexpr(self, p):
-        """forexpr  : ID '=' matrix"""
+        """forexpr  : ID '=' expr"""
         p[0] = AST.ForExpr(p[1], p[3])
-
-    def p_matrix(self, p):
-        """matrix   : numexpr ':' numexpr
-                    | '[' rows ']'
-                    | '(' matrix ')'
-                    | ZEROS '(' numexpr ')'
-                    | ONES '(' numexpr ')'
-                    | EYE '(' numexpr ')'
-                    | matrix TRANSPOSE
-                    | ID"""
-        if len(p) == 4:
-            if p[2] == ':':
-                p[0] = AST.Matrix(None, p[1], p[3])
-            else:
-                p[0] = AST.Matrix(p[1], p[2], None)
-        elif len(p) == 5:
-            p[0] = AST.Matrix(p[1], p[3], None)
-        elif len(p) == 3:
-            p[0] = AST.Matrix(p[2], p[1], None)
-        else:
-            p[0] = p[1]
 
     def p_rows(self, p):
         """rows : rowelems ';' rows
@@ -165,30 +143,44 @@ class Parser2(object):
         else:
             p[0] = AST.RowElems(p[1], p[3])
 
-    def p_logexpr(self, p):
-        """logexpr  : numexpr EQ numexpr
-                    | numexpr GEQ numexpr
-                    | numexpr LEQ numexpr
-                    | numexpr NEQ numexpr
-                    | numexpr '>' numexpr
-                    | numexpr '<' numexpr"""
-        p[0] = AST.LogExpr(p[1], p[2], p[3])
+    def p_expr(self, p):
+        """expr : expr '+' expr
+                | expr '-' expr
+                | expr '*' expr
+                | expr '/' expr
+                | expr DOTADD expr
+                | expr DOTSUB expr
+                | expr DOTMUL expr
+                | expr DOTDIV expr
+                | expr EQ expr
+                | expr GEQ expr
+                | expr LEQ expr
+                | expr NEQ expr
+                | expr '>' expr
+                | expr '<' expr
+                | expr ':' expr
+                | '[' rows ']'
+                | '(' expr ')'
+                | ZEROS '(' expr ')'
+                | ONES '(' expr ')'
+                | EYE '(' expr ')'
+                | expr TRANSPOSE
+                | INTEGER
+                | FLOAT
+                | ID"""
+        if len(p) == 4:
+            if p[1] is not '(' and p[1] is not '-' and p[1] is not '[':
+                p[0] = AST.Expr(p[1], p[3], p[2])
+            else:
+                p[0] = AST.Expr(p[2], None, p[1])
+        elif len(p) == 5:
+            p[0] = AST.Expr(p[3], None, p[1])
+        elif len(p) == 3:
+            p[0] = AST.Expr(p[1], None, p[2])
+        else:
+            p[0] = p[1]
 
-    def p_numexpr(self, p):
-        """numexpr  : numexpr '+' numexpr
-                    | numexpr '-' numexpr
-                    | numexpr '*' numexpr
-                    | numexpr '/' numexpr
-                    | numexpr DOTADD numexpr
-                    | numexpr DOTSUB numexpr
-                    | numexpr DOTMUL numexpr
-                    | numexpr DOTDIV numexpr
-                    | '(' numexpr ')'
-                    | '-' numexpr %prec UMINUS
-                    | ID
-                    | INTEGER
-                    | FLOAT
-                    | matrix"""
+        '''
         if len(p) == 4:
             if p[1] == '(':
                 p[0] = p[2] # '(' numexpr ')'
@@ -198,6 +190,18 @@ class Parser2(object):
             p[0] = AST.NumExpr(p[2], p[1], None)  # -numexpr
         else:
             p[0] = AST.NumExpr(p[1], None, None)  # numexpr
+            
+        if len(p) == 4:
+            if p[2] == ':':
+                p[0] = AST.Matrix(None, p[1], p[3])
+            else:
+                p[0] = AST.Matrix(p[1], p[2], None)
+        elif len(p) == 5:
+            p[0] = AST.Matrix(p[1], p[3], None)
+        elif len(p) == 3:
+            p[0] = AST.Matrix(p[2], p[1], None)
+        else:
+            p[0] = p[1]'''
 
     def p_error(self, p):
         if p:

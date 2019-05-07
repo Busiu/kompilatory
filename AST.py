@@ -83,11 +83,11 @@ class Matrix(Node):
         self.val2 = val2
 
 
-#class Matrix(Node):
-#    def __init__(self, val, fun, val2):
-#        self.val = val
-#        self.val2 = val2
-#        self.fun = fun
+class Expr(Node):
+    def __init__(self, val1, val2, fun):
+        self.val1 = val1
+        self.val2 = val2
+        self.fun = fun
 
 
 class Rows(Node):
@@ -100,20 +100,6 @@ class RowElems(Node):
     def __init__(self, rvalue, rowelems):
         self.rvalue = rvalue
         self.rowelems = rowelems
-
-
-class LogExpr(Node):
-    def __init__(self, expr1, op, expr2):
-        self.expr1 = expr1
-        self.op = op
-        self.expr2 = expr2
-
-
-class NumExpr(Node):
-    def __init__(self, val1, op, val2):
-        self.val1 = val1
-        self.op = op
-        self.val2 = val2
 
 
 class Error(Node):
