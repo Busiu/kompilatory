@@ -50,11 +50,6 @@ class Conditional(Node):
         self.block2 = block2
 
 
-class Cond(Node):
-    def __init__(self, val):
-        self.val = val
-
-
 class Block(Node):
     def __init__(self, val):
         self.val = val

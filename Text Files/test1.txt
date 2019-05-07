@@ -3,3 +3,5 @@ E1 = [ a, b, c;
        g, h, i];
 
 E2 = zeros(a);
+
+FLOAT = 3.456;

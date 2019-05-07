@@ -98,10 +98,6 @@ class TreePrinter:
             ret += print_with_str(self.block2, indent + 1)
         return ret
 
-    @addToClass(AST.Cond)
-    def print_tree(self, indent=0):
-        return print_with_str(self.val, indent)
-
     @addToClass(AST.Block)
     def print_tree(self, indent=0):
         return print_with_str(self.val, indent)
@@ -140,19 +136,6 @@ class TreePrinter:
                 ret += '\n'
                 ret += print_with_str(reverseSignDict[self.fun], indent)
             return ret
-
-        '''elif(self.fun == "zeros" or self.fun == "ones" or self.fun == "eye" or self.fun == ".T"):
-            ret = print_with_str(self.fun, indent)
-            ret += '\n'
-            ret += print_with_str(self.val1, indent + 1)
-            return ret
-        elif self.fun == '[':
-            ret = print_with_str("VECTOR", indent)
-            ret += '\n'
-            ret += print_with_str(self.val1, indent + 1)
-            return ret
-        else:
-            return print_with_str(self.val1, indent + 1)'''
 
     @addToClass(AST.Rows)
     def print_tree(self, indent=0):

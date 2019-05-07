@@ -1,8 +1,5 @@
 import ply.lex as lex
 
-# TODO zamienić floata na takiego jak trzeba
-
-
 class Scanner(object):
     tokens = (
         'DOTADD',

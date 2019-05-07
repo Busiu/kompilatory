@@ -86,19 +86,14 @@ class Parser2(object):
         p[0] = AST.MatrixElem(p[1], p[3], p[5])
 
     def p_conditional(self, p):
-        """conditional  : IF '(' cond ')' block
-                        | IF '(' cond ')' block ELSE block
+        """conditional  : IF '(' expr ')' block
+                        | IF '(' expr ')' block ELSE block
                         | FOR '(' forexpr ')' block
-                        | WHILE '(' cond ')' block"""
+                        | WHILE '(' expr ')' block"""
         if len(p) == 6:
             p[0] = AST.Conditional(p[1], p[3], p[5], None, None)
         else:
             p[0] = AST.Conditional(p[1], p[3], p[5], p[6], p[7])
-
-    def p_cond(self, p):
-        """cond : expr
-                | ID"""
-        p[0] = AST.Cond(p[1])
 
     def p_block(self, p):
         """block : instruction
@@ -119,8 +114,7 @@ class Parser2(object):
     def p_rvalue(self, p):
         """rvalue   : expr
                     | matrixelem
-                    | STRING
-                    | ID"""
+                    | STRING"""
         p[0] = AST.Rvalue(p[1])
 
     def p_forexpr(self, p):
