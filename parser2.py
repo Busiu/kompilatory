@@ -26,6 +26,9 @@ class Parser2(object):
 
     precedence = (
         # to fill ...
+        ("left", "IF"),
+        ("left", "ELSE"),
+        ("left", ':', ','),
         ("left", '=', 'ADDASSIGN', 'SUBASSIGN', 'MULASSIGN', 'DIVASSIGN', 'DOTADDASSIGN', 'DOTSUBASSIGN',
          'DOTMULASSIGN', 'DOTDIVASSIGN'),
         ("left", '<', '>', 'EQ', 'LEQ', 'GEQ', 'NEQ'),
@@ -86,7 +89,7 @@ class Parser2(object):
         p[0] = AST.MatrixElem(p[1], p[3], p[5])
 
     def p_conditional(self, p):
-        """conditional  : IF '(' expr ')' block
+        """conditional  : IF '(' expr ')' block %prec IF
                         | IF '(' expr ')' block ELSE block
                         | FOR '(' forexpr ')' block
                         | WHILE '(' expr ')' block"""
