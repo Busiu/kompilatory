@@ -32,6 +32,7 @@ class Parser2(object):
         ("left", '=', 'ADDASSIGN', 'SUBASSIGN', 'MULASSIGN', 'DIVASSIGN', 'DOTADDASSIGN', 'DOTSUBASSIGN',
          'DOTMULASSIGN', 'DOTDIVASSIGN'),
         ("left", '<', '>', 'EQ', 'LEQ', 'GEQ', 'NEQ'),
+        ("left", 'UMINUS'),
         ("left", '+', '-', 'DOTADD', 'DOTSUB'),
         ("left", '*', '/', 'DOTMUL', 'DOTDIV'),
         ("left", 'TRANSPOSE')
@@ -145,6 +146,7 @@ class Parser2(object):
                 | expr '-' expr
                 | expr '*' expr
                 | expr '/' expr
+                | '-' expr %prec UMINUS
                 | expr DOTADD expr
                 | expr DOTSUB expr
                 | expr DOTMUL expr
@@ -173,32 +175,12 @@ class Parser2(object):
         elif len(p) == 5:
             p[0] = AST.Expr(p[3], None, p[1])
         elif len(p) == 3:
-            p[0] = AST.Expr(p[1], None, p[2])
+            if p[1] == '-':
+                p[0] = AST.Expr(p[2], None, p[1])
+            else:
+                p[0] = AST.Expr(p[1], None, p[2])
         else:
             p[0] = p[1]
-
-        '''
-        if len(p) == 4:
-            if p[1] == '(':
-                p[0] = p[2] # '(' numexpr ')'
-            else:
-                p[0] = AST.NumExpr(p[1], p[2], p[3])  # numexpr op numexpr
-        elif len(p) == 3:
-            p[0] = AST.NumExpr(p[2], p[1], None)  # -numexpr
-        else:
-            p[0] = AST.NumExpr(p[1], None, None)  # numexpr
-            
-        if len(p) == 4:
-            if p[2] == ':':
-                p[0] = AST.Matrix(None, p[1], p[3])
-            else:
-                p[0] = AST.Matrix(p[1], p[2], None)
-        elif len(p) == 5:
-            p[0] = AST.Matrix(p[1], p[3], None)
-        elif len(p) == 3:
-            p[0] = AST.Matrix(p[2], p[1], None)
-        else:
-            p[0] = p[1]'''
 
     def p_error(self, p):
         if p:
