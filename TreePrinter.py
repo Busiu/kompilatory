@@ -41,22 +41,24 @@ class TreePrinter:
 
     @addToClass(AST.Instructions)
     def print_tree(self, indent=0):
-        ret = self.instruction.print_tree(indent)
-        if self.instructions is not None:
-            ret += self.instructions.print_tree(indent)
+        ret = ""
+        for i, instruction in enumerate(self.instructions):
+            if i != 0:
+                ret += '\n'
+            ret += print_with_str(instruction, indent)
+
         return ret
+        # return print_with_str(self.instructions, indent)
 
     @addToClass(AST.Instruction)
     def print_tree(self, indent=0):
         ret = ""
         if self.val2 is None:
             ret += print_with_str(self.val1, indent)
-            ret += '\n'
         else:
             ret += print_with_str(self.val1, indent)
             ret += '\n'
             ret += print_with_str(self.val2, indent + 1)
-            ret += '\n'
         return ret
 
     @addToClass(AST.Assignment)

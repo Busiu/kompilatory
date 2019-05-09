@@ -45,11 +45,11 @@ class Parser2(object):
                         | instruction
                         | '{' instructions '}'"""
         if len(p) == 3:
-            p[0] = AST.Instructions(p[1], p[2])
+            p[0] = AST.Instructions(p[1]) + AST.Instructions(p[2])
         elif len(p) == 2:
-            p[0] = AST.Instructions(p[1], None)
+            p[0] = AST.Instructions(p[1])
         else:
-            p[0] = AST.Instructions(p[2], None)
+            p[0] = AST.Instructions(p[2])
 
 
     def p_instruction(self, p):

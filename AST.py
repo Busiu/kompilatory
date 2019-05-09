@@ -10,10 +10,16 @@ class Program(Node):
 
 
 class Instructions(Node):
-    #TODO zamienic na liste
-    def __init__(self, instruction, instructions):
-        self.instruction = instruction
-        self.instructions = instructions
+    def __init__(self, arg):
+        if isinstance(arg, Instruction):
+            self.instructions = [arg]
+        elif isinstance(arg, Instructions):
+            self.instructions = arg.instructions
+        elif isinstance(arg, list):
+            self.instructions = arg
+
+    def __add__(self, other):
+        return Instructions(self.instructions + other.instructions)
 
 
 class Instruction(Node):
