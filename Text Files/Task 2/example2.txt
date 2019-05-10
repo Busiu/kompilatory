@@ -1,7 +1,8 @@
 # assignment operators
 # binary operators
 # transposition
-
+A = 5;
+B = 5;
 print(C);
 
 C = "ala ma kota";     # assignemnt with unary expression
@@ -20,3 +21,5 @@ C -= B ;  # substract B from C
 C *= A ;  # multiply A with C
 C /= A ;  # divide A by C
 
+C = zeros(5);
+C = eye(3);

@@ -118,28 +118,32 @@ class Parser2(object):
     def p_rvalue(self, p):
         """rvalue   : expr
                     | matrixelem
-                    | STRING"""
+                    | str"""
         p[0] = AST.Rvalue(p[1])
 
+    def p_str(self, p):
+        """str      : STRING"""
+        p[0] = AST.Str(p[1])
+
     def p_forexpr(self, p):
-        """forexpr  : ID '=' expr"""
-        p[0] = AST.ForExpr(p[1], p[3])
+        """forexpr  : ID '=' expr ':' expr"""
+        p[0] = AST.ForExpr(p[1], p[3], p[5])
 
     def p_rows(self, p):
         """rows : rowelems ';' rows
                 | rowelems"""
         if len(p) == 2:
-            p[0] = AST.Rows(p[1], None)
+            p[0] = AST.Rows(p[1])
         else:
-            p[0] = AST.Rows(p[1], p[3])
+            p[0] = AST.Rows(p[1]) + AST.Rows(p[3])
 
     def p_rowelems(self, p):
         """rowelems : rvalue ',' rowelems
                     | rvalue"""
         if len(p) == 2:
-            p[0] = AST.RowElems(p[1], None)
+            p[0] = AST.RowElems(p[1])
         else:
-            p[0] = AST.RowElems(p[1], p[3])
+            p[0] = AST.RowElems(p[1]) + AST.RowElems(p[3])
 
     def p_expr(self, p):
         """expr : expr '+' expr
@@ -157,7 +161,6 @@ class Parser2(object):
                 | expr NEQ expr
                 | expr '>' expr
                 | expr '<' expr
-                | expr ':' expr
                 | '[' rows ']'
                 | '(' expr ')'
                 | ZEROS '(' expr ')'
