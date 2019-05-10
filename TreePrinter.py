@@ -122,7 +122,9 @@ class TreePrinter:
         ret += '\n'
         ret += print_with_str("range", indent)
         ret += '\n'
-        ret += print_with_str(self.val, indent + 1)
+        ret += print_with_str(self.start, indent + 1)
+        ret += '\n'
+        ret += print_with_str(self.finish, indent + 1)
         return ret
 
     @addToClass(AST.Expr)

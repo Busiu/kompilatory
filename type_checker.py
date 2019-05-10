@@ -79,6 +79,7 @@ class TypeChecker(NodeVisitor):
         # id : (type, x, y)
         self.variables = {}
         self.errors = []
+        self.in_loop = False
 
     def get_errors(self):
         return self.errors
@@ -140,9 +141,14 @@ class TypeChecker(NodeVisitor):
 
     def visit_Conditional(self, node):
         self.visit(node.conditional)
+        if node.condSt == 'for' or node.condSt == 'while':
+            was_in_loop = self.in_loop
+            self.in_loop = True
         self.visit(node.block1)
         if node.block2:
             self.visit(node.block2)
+        if node.condSt == 'for' or node.condSt == 'while':
+            self.in_loop = was_in_loop
 
     def visit_Block(self, node):
         self.visit(node.val)
@@ -157,7 +163,11 @@ class TypeChecker(NodeVisitor):
         return 'string', None, None
 
     def visit_ForExpr(self, node):
-        type, x, y = self.visit(node.start)
+        self.variables[node.identificator] = 'int', None, None
+        ret = self.visit(node.start)
+        if ret is None:
+            return
+        type, x, y = ret
         if type != 'int':
             self.errors.append("Start of range must be an integer. Is {0}".format(type))
         type, x, y = self.visit(node.finish)
@@ -210,7 +220,6 @@ class TypeChecker(NodeVisitor):
                 ret_x = y_1
                 ret_y = x_1
 
-
         return ret_type, ret_x, ret_y
 
     def visit_Rows(self, node):
@@ -237,9 +246,11 @@ class TypeChecker(NodeVisitor):
     def visit_float(self, node):
         return 'float', None, None
 
-    #This is in fact not a string but a variable id
+    # This is in fact not a string but a variable id
     def visit_str(self, node):
-        if node == 'print':
+        if node in ['break', 'continue'] and not self.in_loop:
+            self.errors.append("Break and continue cannot be used outside loops")
+        if node in ['print', 'break', 'continue', 'return']:
             return None
         try:
             return self.variables[node]
