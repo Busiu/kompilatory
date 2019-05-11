@@ -183,7 +183,10 @@ class Parser2(object):
             else:
                 p[0] = AST.Expr(p[1], None, p[2])
         else:
-            p[0] = p[1]
+            if isinstance(p[1], int):
+                p[0] = AST.Int(p[1])
+            else:
+                p[0] = AST.Float(p[1])
 
     def p_error(self, p):
         if p:

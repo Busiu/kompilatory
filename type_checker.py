@@ -240,10 +240,10 @@ class TypeChecker(NodeVisitor):
     def visit_Error(self, node):
         pass
 
-    def visit_int(self, node):
+    def visit_Int(self, node):
         return 'int', None, None
 
-    def visit_float(self, node):
+    def visit_Float(self, node):
         return 'float', None, None
 
     # This is in fact not a string but a variable id

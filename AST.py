@@ -122,6 +122,16 @@ class RowElems(Node):
         return RowElems(self.elems + other.elems)
 
 
+class Int(Node):
+    def __init__(self, val):
+        self.val = val
+
+
+class Float(Node):
+    def __init__(self, val):
+        self.val = val
+
+
 class Error(Node):
     def __init__(self):
         pass
