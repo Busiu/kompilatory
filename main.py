@@ -5,7 +5,7 @@ from Interpreter import Interpreter
 
 
 def main():
-    fh = open("Text Files/Task 5/example1.txt", "r")
+    fh = open("Text Files/Task 5/example2.txt", "r")
     data = fh.read()
 
     my_parser = Parser2()
@@ -26,5 +26,7 @@ def main():
 
             print(ast)
             print(result)
+            #for memory in result:
+            #    print(memory)
 
 main()

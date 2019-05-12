@@ -1,19 +1,19 @@
 class Memory:
-    def __init__(self, name):
-        self.name = name
+    def __init__(self, segmentName):
+        self.segmentName = segmentName
         self.variables = {}
 
-    def __contains__(self, variable):
-        return variable in self.variables
+    def __contains__(self, item):
+        return item in self.variables
 
     def __str__(self):
-        return self.name
+        return self.segmentName
 
-    def get(self, variable):
-        return self.variables[variable]
+    def get(self, name):
+        return self.variables[name]
 
-    def put(self, variable, value):
-        self.variables[variable] = value
+    def put(self, name, value):
+        self.variables[name] = value
 
 
 class MemoryStack:

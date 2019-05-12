@@ -1,0 +1,7 @@
+print("HEHE");
+A = 5 + 4;
+
+for(i = 1:10)
+{
+    print(i);
+}

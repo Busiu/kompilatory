@@ -71,9 +71,6 @@ class Rvalue(Node):
         self.val = val
         self.is_string = is_string
 
-class Str(Node):
-    def __init__(self, val):
-        self.val = val
 
 class ForExpr(Node):
     def __init__(self, identificator, start, finish):
@@ -128,6 +125,20 @@ class Int(Node):
 
 
 class Float(Node):
+    def __init__(self, val):
+        self.val = val
+
+    def __add__(self, other):
+        return self.val + other.val
+
+    def __ge__(self, other):
+        if isinstance(other, float):
+            return self.val > other
+        else:
+            return self.val > other.val
+
+
+class Str(Node):
     def __init__(self, val):
         self.val = val
 
