@@ -1,7 +1,36 @@
 print("HEHE");
-A = 5 + 4;
 
-for(i = 1:10)
+A = 5 + 4;
+B = 10 - 6;
+C = A * B;
+print(A, B, C);
+
+for(d = 1:10)
 {
-    print(i);
+    print(d);
+}
+
+if(C > A)
+{
+    print("C jest wieksze od A");
+}
+else
+{
+    print("C nie jest wieksze od A");
+}
+
+if(B > A)
+{
+    print("B jest wieksze od A");
+}
+else
+{
+    print("B nie jest wieksze od A");
+}
+
+i = 6;
+while(i < 10)
+{
+    print("Wartosc i wynosi:", i);
+    i = i + 1;
 }

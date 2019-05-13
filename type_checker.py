@@ -246,6 +246,9 @@ class TypeChecker(NodeVisitor):
     def visit_Float(self, node):
         return 'float', None, None
 
+    def visit_Id(self, node):
+        pass
+
     # This is in fact not a string but a variable id
     def visit_str(self, node):
         if node in ['break', 'continue'] and not self.in_loop:

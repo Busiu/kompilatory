@@ -185,8 +185,10 @@ class Parser2(object):
         else:
             if isinstance(p[1], int):
                 p[0] = AST.Int(p[1])
-            else:
+            elif isinstance(p[1], float):
                 p[0] = AST.Float(p[1])
+            else:
+                p[0] = AST.Id(p[1])
 
     def p_error(self, p):
         if p:

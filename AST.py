@@ -138,6 +138,11 @@ class Float(Node):
             return self.val > other.val
 
 
+class Id(Node):
+    def __init__(self, name):
+        self.name = name
+
+
 class Str(Node):
     def __init__(self, val):
         self.val = val

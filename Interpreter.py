@@ -28,27 +28,28 @@ class Interpreter(object):
 
     @when(AST.Instruction)
     def visit(self, node):
-        if(node.val1 == "BREAK"):
+        if(node.val1 == "break"):
             raise BreakException()
-        elif(node.val1 == "CONTINUE"):
+        elif(node.val1 == "continue"):
             raise ContinueException()
         self.visit(node.val1)
         self.visit(node.val2)
 
     @when(AST.Assignment)
     def visit(self, node):
+        name = str(node.variable)
         value = self.visit(node.rvalue)
-        var = self.globalMemory.get(node.variable)
+        var = self.globalMemory.get(name)
         if node.op == "=":
-            self.globalMemory.set(node.variable, value)
+            self.globalMemory.set(name, value)
         elif node.op == "+=":
-            self.globalMemory.set(node.variable, var + value)
+            self.globalMemory.set(name, var + value)
         elif node.op == "-=":
-            self.globalMemory.set(node.variable, var - value)
+            self.globalMemory.set(name, var - value)
         elif node.op == "*=":
-            self.globalMemory.set(node.variable, var * value)
+            self.globalMemory.set(name, var * value)
         elif node.op == "/=":
-            self.globalMemory.set(node.variable, var / value)
+            self.globalMemory.set(name, var / value)
         elif node.op == ".+=":
             raise Exception("Not implemented yet!")
         elif node.op == ".-=":
@@ -60,7 +61,7 @@ class Interpreter(object):
 
     @when(AST.Conditional)
     def visit(self, node):
-        if node.condSt == "IF":
+        if node.condSt == "if":
             allowed = self.visit(node.conditional)
             if allowed:
                 self.globalMemory.push(Memory("mem"))
@@ -80,6 +81,7 @@ class Interpreter(object):
     def visit(self, node):
         self.globalMemory.push(Memory("mem"))
         self.visit(node.val)
+        self.globalMemory.pop()
 
     @when(AST.PtrValues)
     def visit(self, node):
@@ -94,18 +96,24 @@ class Interpreter(object):
 
     @when(AST.ForExpr)
     def visit(self, node):
+        startValue = self.visit(node.start)
+        finishValue = self.visit(node.finish)
         if self.globalMemory.get(node.identificator) is None:
-            self.globalMemory.insert(node.identificator, node.start)
-        iterator = self.globalMemory.get(node.identificator)
-        if iterator >= node.finish:
+            self.globalMemory.insert(node.identificator, startValue)
+            iterator = self.globalMemory.get(node.identificator)
+        else:
+            iterator = self.globalMemory.get(node.identificator)
+            self.globalMemory.set(node.identificator, iterator + 1)
+        if iterator >= finishValue:
             return False
-        self.globalMemory.set(node.identificator, iterator + 1)
         return True
 
     @when(AST.Expr)
     def visit(self, node):
         val1 = self.visit(node.val1)
         val2 = self.visit(node.val2)
+        #print(val1)
+        #print(val2)
         if node.fun == "+":
             return val1 + val2
         elif node.fun == "-":
@@ -114,6 +122,18 @@ class Interpreter(object):
             return val1 * val2
         elif node.fun == "/":
             return val1 / val2
+        elif node.fun == ">":
+            return val1 > val2
+        elif node.fun == "<":
+            return val1 < val2
+        elif node.fun == "<=":
+            return val1 <= val2
+        elif node.fun == ">=":
+            return val1 >= val2
+        elif node.fun == "==":
+            return val1 == val2
+        elif node.fun == "!=":
+            return val1 != val2
         else:
             raise Exception("Not implemented yet!")
 
@@ -124,6 +144,10 @@ class Interpreter(object):
     @when(AST.Float)
     def visit(self, node):
         return float(node.val)
+
+    @when(AST.Id)
+    def visit(self, node):
+        return self.globalMemory.get(str(node.name))
 
     @when(AST.Str)
     def visit(self, node):

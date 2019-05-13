@@ -171,6 +171,10 @@ class TreePrinter:
     def print_tree(self, indent=0):
         return print_with_str(self.val, indent)
 
+    @addToClass(AST.Id)
+    def print_tree(self, indent=0):
+        return print_with_str(self.name, indent)
+
     @addToClass(AST.Error)
     def print_tree(self, indent=0):
         raise Exception("Something went wrong...")

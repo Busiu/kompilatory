@@ -26,7 +26,5 @@ def main():
 
             print(ast)
             print(result)
-            #for memory in result:
-            #    print(memory)
 
 main()

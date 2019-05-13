@@ -34,6 +34,13 @@ class MemoryStack:
         self.stack[0].put(name, value)
 
     def set(self, name, value):
+        inMemory = False
+        for memory in self.stack:
+            if name in memory:
+                inMemory = True
+                break
+        if not inMemory:
+            self.insert(name, value)
         for memory in self.stack:
             if name in memory:
                 memory.put(name, value)
@@ -43,4 +50,4 @@ class MemoryStack:
         self.stack.insert(0, memory)
 
     def pop(self):
-        return self.stack.pop()
+        return self.stack.pop(0)
