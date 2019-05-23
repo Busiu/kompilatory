@@ -2,10 +2,11 @@ from parser2 import Parser2
 import TreePrinter
 from type_checker import TypeChecker
 from Interpreter import Interpreter
+from matrix_operations import *
 
 
 def main():
-    fh = open("Text Files/Task 5/example2.txt", "r")
+    fh = open("Text Files/Task 5/example3.txt", "r")
     data = fh.read()
 
     my_parser = Parser2()
@@ -26,5 +27,13 @@ def main():
 
             print(ast)
             print(result)
+
+
+def test():
+    lol = ones(4)
+    lol2 = zeros(4)
+    lol3 = eye(4)
+    print(lol, lol2, lol3)
+
 
 main()

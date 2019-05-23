@@ -5,6 +5,7 @@ import AST
 from Memory import *
 from Exceptions import *
 from visit import *
+from matrix_operations import *
 
 sys.setrecursionlimit(10000)
 
@@ -32,6 +33,9 @@ class Interpreter(object):
             raise BreakException()
         elif(node.val1 == "continue"):
             raise ContinueException()
+        elif(node.val1 == "return"):
+            raise ReturnException()
+
         self.visit(node.val1)
         self.visit(node.val2)
 
@@ -108,6 +112,22 @@ class Interpreter(object):
             return False
         return True
 
+    @when(AST.Rows)
+    def visit(self, node):
+        matrix = []
+        for row in node.row_elems:
+            vector = self.visit(row)
+            matrix.append(vector)
+        return matrix
+
+    @when(AST.RowElems)
+    def visit(self, node):
+        vector = []
+        for row_elem in node.elems:
+            elem = self.visit(row_elem)
+            vector.append(elem)
+        return vector
+
     @when(AST.Expr)
     def visit(self, node):
         val1 = self.visit(node.val1)
@@ -134,8 +154,18 @@ class Interpreter(object):
             return val1 == val2
         elif node.fun == "!=":
             return val1 != val2
+        elif node.fun == "[":
+            return val1
+        elif node.fun == "(":
+            return val1
+        elif node.fun == "zeros":
+            return zeros(val1)
+        elif node.fun == "ones":
+            return ones(val1)
+        elif node.fun == "eye":
+            return eye(val1)
         else:
-            raise Exception("Not implemented yet!")
+            raise Exception("Not implemented yet! expr")
 
     @when(AST.Int)
     def visit(self, node):
