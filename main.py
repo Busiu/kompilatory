@@ -6,7 +6,7 @@ from matrix_operations import *
 
 
 def main():
-    fh = open("Text Files/Task 5/example3.txt", "r")
+    fh = open("Text Files/Task 5/test1.txt", "r")
     data = fh.read()
 
     my_parser = Parser2()
@@ -34,6 +34,18 @@ def test():
     lol2 = zeros(4)
     lol3 = eye(4)
     print(lol, lol2, lol3)
+
+    print(lol + lol3)
+
+    print(lol * lol3)
+
+    mul1 = Matrix([[1, 1, 1],
+            [1, 1, 1]])
+    mul2 = Matrix([[2, 2],
+            [3, 3],
+            [4, 4]])
+
+    print(mul1 * mul2)
 
 
 main()

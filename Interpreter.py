@@ -34,7 +34,7 @@ class Interpreter(object):
         elif(node.val1 == "continue"):
             raise ContinueException()
         elif(node.val1 == "return"):
-            raise ReturnException()
+            raise ReturnValueException(None)
 
         self.visit(node.val1)
         self.visit(node.val2)
@@ -132,8 +132,11 @@ class Interpreter(object):
     def visit(self, node):
         val1 = self.visit(node.val1)
         val2 = self.visit(node.val2)
-        #print(val1)
-        #print(val2)
+        #print("val1 is instance of: ", type(val1).__name__)
+        #print("val2 is instance of: ", type(val2).__name__)
+
+        print(val1)
+        print(val2)
         if node.fun == "+":
             return val1 + val2
         elif node.fun == "-":
@@ -155,7 +158,7 @@ class Interpreter(object):
         elif node.fun == "!=":
             return val1 != val2
         elif node.fun == "[":
-            return val1
+            return Matrix(val1)
         elif node.fun == "(":
             return val1
         elif node.fun == "zeros":

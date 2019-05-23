@@ -128,15 +128,6 @@ class Float(Node):
     def __init__(self, val):
         self.val = val
 
-    def __add__(self, other):
-        return self.val + other.val
-
-    def __ge__(self, other):
-        if isinstance(other, float):
-            return self.val > other
-        else:
-            return self.val > other.val
-
 
 class Id(Node):
     def __init__(self, name):
