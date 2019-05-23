@@ -125,12 +125,12 @@ class Parser2(object):
         p[0] = AST.ForExpr(p[1], p[3], p[5])
 
     def p_rows(self, p):
-        """rows : rowelems ';' rows
-                | rowelems"""
-        if len(p) == 2:
-            p[0] = AST.Rows(p[1])
+        """rows : '[' rowelems ']' ';' rows
+                | '[' rowelems ']' """
+        if len(p) == 4:
+            p[0] = AST.Rows(p[2])
         else:
-            p[0] = AST.Rows(p[1]) + AST.Rows(p[3])
+            p[0] = AST.Rows(p[2]) + AST.Rows(p[5])
 
     def p_rowelems(self, p):
         """rowelems : rvalue ',' rowelems

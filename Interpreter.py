@@ -120,12 +120,24 @@ class Interpreter(object):
             return False
         return True
 
+    ''' @when(AST.Rows)
+     def visit(self, node):
+         rows_list = []
+         for row in node.row_elems:
+             vector = self.visit(row)
+             if isinstance(vector, AST.Rows):
+                 real_vector = self.visit(vector)
+                 rows_list.append(real_vector)
+             else:
+                 rows_list.append(vector)
+         return rows_list
+    '''
+
     @when(AST.Rows)
     def visit(self, node):
         matrix = []
         for row in node.row_elems:
             vector = self.visit(row)
-            print(vector)
             matrix.append(vector)
         print(matrix)
         return matrix
@@ -133,10 +145,11 @@ class Interpreter(object):
     @when(AST.RowElems)
     def visit(self, node):
         vector = []
+        print(len(node.elems))
         for row_elem in node.elems:
             elem = self.visit(row_elem)
             vector.append(elem)
-        print(vector)
+        print("Created Vector: ", vector)
         return vector
 
     @when(AST.Expr)
