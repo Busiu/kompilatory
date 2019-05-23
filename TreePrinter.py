@@ -69,11 +69,7 @@ class TreePrinter:
         ret += '\n'
         ret += print_with_str(self.rvalue, indent + 1)
         return ret
-
-    @addToClass(AST.Variable)
-    def print_tree(self, indent=0):
-        return print_with_str(self.val, indent)
-
+    
     @addToClass(AST.MatrixElem)
     def print_tree(self, indent=0):
         ret = print_with_str(self.identificator, indent)

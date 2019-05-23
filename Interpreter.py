@@ -63,6 +63,7 @@ class Interpreter(object):
         elif node.op == "./=":
             raise Exception("Not implemented yet!")
 
+
     @when(AST.Conditional)
     def visit(self, node):
         if node.condSt == "if":

@@ -69,21 +69,16 @@ class Parser2(object):
             p[0] = AST.Instruction(p[1], p[3])
 
     def p_assignment(self, p):
-        """assignment   : variable '=' rvalue
-                        | variable DOTADDASSIGN rvalue
-                        | variable DOTSUBASSIGN rvalue
-                        | variable DOTMULASSIGN rvalue
-                        | variable DOTDIVASSIGN rvalue
-                        | variable ADDASSIGN rvalue
-                        | variable SUBASSIGN rvalue
-                        | variable MULASSIGN rvalue
-                        | variable DIVASSIGN rvalue"""
+        """assignment   : ID '=' rvalue
+                        | ID DOTADDASSIGN rvalue
+                        | ID DOTSUBASSIGN rvalue
+                        | ID DOTMULASSIGN rvalue
+                        | ID DOTDIVASSIGN rvalue
+                        | ID ADDASSIGN rvalue
+                        | ID SUBASSIGN rvalue
+                        | ID MULASSIGN rvalue
+                        | ID DIVASSIGN rvalue"""
         p[0] = AST.Assignment(p[1], p[2], p[3])
-
-    def p_variable(self, p):
-        """variable : ID
-                    | matrixelem"""
-        p[0] = AST.Variable(p[1])
 
     def p_matrixelem(self, p):
         """matrixelem   : ID '[' expr ',' expr ']'"""
