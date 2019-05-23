@@ -55,13 +55,13 @@ class Interpreter(object):
         elif node.op == "/=":
             self.globalMemory.set(name, var / value)
         elif node.op == ".+=":
-            raise Exception("Not implemented yet!")
+            self.globalMemory.set(name, var.ass_dot_add(value))
         elif node.op == ".-=":
-            raise Exception("Not implemented yet!")
+            self.globalMemory.set(name, var.ass_dot_sub(value))
         elif node.op == ".*=":
-            raise Exception("Not implemented yet!")
+            self.globalMemory.set(name, var.ass_dot_mul(value))
         elif node.op == "./=":
-            raise Exception("Not implemented yet!")
+            self.globalMemory.set(name, var.ass_dot_div(value))
 
     @when(AST.MatrixElem)
     def visit(self, node):
@@ -139,28 +139,21 @@ class Interpreter(object):
         for row in node.row_elems:
             vector = self.visit(row)
             matrix.append(vector)
-        print(matrix)
         return matrix
 
     @when(AST.RowElems)
     def visit(self, node):
         vector = []
-        print(len(node.elems))
         for row_elem in node.elems:
             elem = self.visit(row_elem)
             vector.append(elem)
-        print("Created Vector: ", vector)
         return vector
 
     @when(AST.Expr)
     def visit(self, node):
         val1 = self.visit(node.val1)
         val2 = self.visit(node.val2)
-        #print("val1 is instance of: ", type(val1).__name__)
-        #print("val2 is instance of: ", type(val2).__name__)
 
-        #print(val1)
-        #print(val2)
         if node.fun == "+":
             return val1 + val2
         elif node.fun == "-":
@@ -169,6 +162,14 @@ class Interpreter(object):
             return val1 * val2
         elif node.fun == "/":
             return val1 / val2
+        elif node.fun == ".+":
+            return dot_add(val1, val2)
+        elif node.fun == ".-":
+            return dot_sub(val1, val2)
+        elif node.fun == ".*":
+            return dot_mul(val1, val2)
+        elif node.fun == "./":
+            return dot_div(val1, val2)
         elif node.fun == ">":
             return val1 > val2
         elif node.fun == "<":
