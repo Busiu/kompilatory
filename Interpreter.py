@@ -29,11 +29,11 @@ class Interpreter(object):
 
     @when(AST.Instruction)
     def visit(self, node):
-        if(node.val1 == "break"):
+        if node.val1 == "break":
             raise BreakException()
-        elif(node.val1 == "continue"):
+        elif node.val1 == "continue":
             raise ContinueException()
-        elif(node.val1 == "return"):
+        elif node.val1 == "return":
             raise ReturnValueException(None)
 
         self.visit(node.val1)
@@ -63,6 +63,13 @@ class Interpreter(object):
         elif node.op == "./=":
             raise Exception("Not implemented yet!")
 
+    @when(AST.MatrixElem)
+    def visit(self, node):
+        name = str(node.identificator)
+        val1 = self.visit(node.val1)
+        val2 = self.visit(node.val1)
+        matrix = self.globalMemory.get(name)
+        return matrix.get(val1, val2)
 
     @when(AST.Conditional)
     def visit(self, node):
@@ -118,7 +125,9 @@ class Interpreter(object):
         matrix = []
         for row in node.row_elems:
             vector = self.visit(row)
+            print(vector)
             matrix.append(vector)
+        print(matrix)
         return matrix
 
     @when(AST.RowElems)
@@ -127,6 +136,7 @@ class Interpreter(object):
         for row_elem in node.elems:
             elem = self.visit(row_elem)
             vector.append(elem)
+        print(vector)
         return vector
 
     @when(AST.Expr)
@@ -136,8 +146,8 @@ class Interpreter(object):
         #print("val1 is instance of: ", type(val1).__name__)
         #print("val2 is instance of: ", type(val2).__name__)
 
-        print(val1)
-        print(val2)
+        #print(val1)
+        #print(val2)
         if node.fun == "+":
             return val1 + val2
         elif node.fun == "-":

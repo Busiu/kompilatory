@@ -6,7 +6,7 @@ from matrix_operations import *
 
 
 def main():
-    fh = open("Text Files/Task 5/test1.txt", "r")
+    fh = open("Text Files/Task 5/example3.txt", "r")
     data = fh.read()
 
     my_parser = Parser2()

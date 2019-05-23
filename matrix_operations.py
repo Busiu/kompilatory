@@ -40,6 +40,9 @@ class Matrix:
             string += "\n"
         return string
 
+    def get(self, row, col):
+        return self.matrix[row][col]
+
 
 def ones(size):
     matrix = []
