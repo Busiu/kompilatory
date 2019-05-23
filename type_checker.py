@@ -110,7 +110,7 @@ class TypeChecker(NodeVisitor):
         if ret is None:
             return None
         (rval_type, r_x, r_y) = ret
-        var_id = node.variable.val
+        var_id = node.variable
         if node.op == '=':
             self.variables[var_id] = (rval_type, r_x, r_y)
         else:
