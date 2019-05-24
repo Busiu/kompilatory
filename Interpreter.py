@@ -90,7 +90,12 @@ class Interpreter(object):
         else:
             self.global_memory.push(Memory("mem"))
             while self.visit(node.conditional):
-                self.visit(node.block1)
+                try:
+                    self.visit(node.block1)
+                except BreakException:
+                    break
+                except ContinueException:
+                    continue
             self.global_memory.pop()
 
     @when(AST.Block)
