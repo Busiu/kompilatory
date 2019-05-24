@@ -81,17 +81,17 @@ class TreePrinter:
 
     @addToClass(AST.Conditional)
     def print_tree(self, indent=0):
-        ret = print_with_str(self.condSt, indent)
+        ret = print_with_str(self.cond_st, indent)
         ret += '\n'
         ret += print_with_str(self.conditional, indent + 1)
-        if self.condSt == "if":
+        if self.cond_st == "if":
             ret += '\n'
             ret += print_with_str("then", indent)
         ret += '\n'
         ret += print_with_str(self.block1, indent + 1)
         if self.block2 is not None:
             ret += '\n'
-            ret += print_with_str(self.elseSt, indent)
+            ret += print_with_str(self.else_st, indent)
             ret += '\n'
             ret += print_with_str(self.block2, indent + 1)
         return ret

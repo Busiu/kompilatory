@@ -50,23 +50,23 @@ class Matrix:
         return string
 
     def ass_dot_add(self, other):
-        for i in self.matrix:
-            for j in self.matrix[0]:
+        for i in range(len(self.matrix)):
+            for j in range(len(self.matrix[0])):
                 self.matrix[i][j] += other.matrix[i][j]
 
     def ass_dot_sub(self, other):
-        for i in self.matrix:
-            for j in self.matrix[0]:
+        for i in range(len(self.matrix)):
+            for j in range(len(self.matrix[0])):
                 self.matrix[i][j] -= other.matrix[i][j]
 
     def ass_dot_mul(self, other):
-        for i in self.matrix:
-            for j in self.matrix[0]:
+        for i in range(len(self.matrix)):
+            for j in range(len(self.matrix[0])):
                 self.matrix[i][j] *= other.matrix[i][j]
 
     def ass_dot_div(self, other):
-        for i in self.matrix:
-            for j in self.matrix[0]:
+        for i in range(len(self.matrix)):
+            for j in range(len(self.matrix[0])):
                 self.matrix[i][j] /= other.matrix[i][j]
 
     def get(self, row, col):

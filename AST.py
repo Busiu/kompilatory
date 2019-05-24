@@ -48,11 +48,11 @@ class MatrixElem(Node):
 
 
 class Conditional(Node):
-    def __init__(self, condSt, conditional, block1, elseSt, block2):
-        self.condSt = condSt
+    def __init__(self, cond_st, conditional, block1, else_st, block2):
+        self.cond_st = cond_st
         self.conditional = conditional
         self.block1 = block1
-        self.elseSt = elseSt
+        self.else_st = else_st
         self.block2 = block2
 
 

@@ -1,13 +1,13 @@
 class Memory:
-    def __init__(self, segmentName):
-        self.segmentName = segmentName
+    def __init__(self, segment_name):
+        self.segment_name = segment_name
         self.variables = {}
 
     def __contains__(self, item):
         return item in self.variables
 
     def __str__(self):
-        return self.segmentName
+        return self.segment_name
 
     def get(self, name):
         return self.variables[name]
@@ -34,12 +34,12 @@ class MemoryStack:
         self.stack[0].put(name, value)
 
     def set(self, name, value):
-        inMemory = False
+        in_mem = False
         for memory in self.stack:
             if name in memory:
-                inMemory = True
+                in_mem = True
                 break
-        if not inMemory:
+        if not in_mem:
             self.insert(name, value)
         for memory in self.stack:
             if name in memory:

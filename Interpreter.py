@@ -12,7 +12,7 @@ sys.setrecursionlimit(10000)
 
 class Interpreter(object):
     def __init__(self):
-        self.globalMemory = MemoryStack()
+        self.global_memory = MemoryStack()
 
     @on("node")
     def visit(self, node):
@@ -43,57 +43,61 @@ class Interpreter(object):
     def visit(self, node):
         name = str(node.variable)
         value = self.visit(node.rvalue)
-        var = self.globalMemory.get(name)
+        var = self.global_memory.get(name)
         if node.op == "=":
-            self.globalMemory.set(name, value)
+            self.global_memory.set(name, value)
         elif node.op == "+=":
-            self.globalMemory.set(name, var + value)
+            self.global_memory.set(name, var + value)
         elif node.op == "-=":
-            self.globalMemory.set(name, var - value)
+            self.global_memory.set(name, var - value)
         elif node.op == "*=":
-            self.globalMemory.set(name, var * value)
+            self.global_memory.set(name, var * value)
         elif node.op == "/=":
-            self.globalMemory.set(name, var / value)
+            self.global_memory.set(name, var / value)
         elif node.op == ".+=":
-            self.globalMemory.set(name, var.ass_dot_add(value))
+            var.ass_dot_add(value)
+            self.global_memory.set(name, var)
         elif node.op == ".-=":
-            self.globalMemory.set(name, var.ass_dot_sub(value))
+            var.ass_dot_sub(value)
+            self.global_memory.set(name, var)
         elif node.op == ".*=":
-            self.globalMemory.set(name, var.ass_dot_mul(value))
+            var.ass_dot_mul(value)
+            self.global_memory.set(name, var)
         elif node.op == "./=":
-            self.globalMemory.set(name, var.ass_dot_div(value))
+            var.ass_dot_div(value)
+            self.global_memory.set(name, var)
 
     @when(AST.MatrixElem)
     def visit(self, node):
         name = str(node.identificator)
         val1 = self.visit(node.val1)
         val2 = self.visit(node.val1)
-        matrix = self.globalMemory.get(name)
+        matrix = self.global_memory.get(name)
         return matrix.get(val1, val2)
 
     @when(AST.Conditional)
     def visit(self, node):
-        if node.condSt == "if":
+        if node.cond_st == "if":
             allowed = self.visit(node.conditional)
             if allowed:
-                self.globalMemory.push(Memory("mem"))
+                self.global_memory.push(Memory("mem"))
                 self.visit(node.block1)
-                self.globalMemory.pop()
-            elif node.elseSt is not None:
-                self.globalMemory.push(Memory("mem"))
+                self.global_memory.pop()
+            elif node.else_st is not None:
+                self.global_memory.push(Memory("mem"))
                 self.visit(node.block2)
-                self.globalMemory.pop()
+                self.global_memory.pop()
         else:
-            self.globalMemory.push(Memory("mem"))
+            self.global_memory.push(Memory("mem"))
             while self.visit(node.conditional):
                 self.visit(node.block1)
-            self.globalMemory.pop()
+            self.global_memory.pop()
 
     @when(AST.Block)
     def visit(self, node):
-        self.globalMemory.push(Memory("mem"))
+        self.global_memory.push(Memory("mem"))
         self.visit(node.val)
-        self.globalMemory.pop()
+        self.global_memory.pop()
 
     @when(AST.PtrValues)
     def visit(self, node):
@@ -108,30 +112,17 @@ class Interpreter(object):
 
     @when(AST.ForExpr)
     def visit(self, node):
-        startValue = self.visit(node.start)
-        finishValue = self.visit(node.finish)
-        if self.globalMemory.get(node.identificator) is None:
-            self.globalMemory.insert(node.identificator, startValue)
-            iterator = self.globalMemory.get(node.identificator)
+        start_index = self.visit(node.start)
+        end_index = self.visit(node.finish)
+        if self.global_memory.get(node.identificator) is None:
+            self.global_memory.insert(node.identificator, start_index)
+            iterator = self.global_memory.get(node.identificator)
         else:
-            iterator = self.globalMemory.get(node.identificator)
-            self.globalMemory.set(node.identificator, iterator + 1)
-        if iterator >= finishValue:
+            iterator = self.global_memory.get(node.identificator)
+            self.global_memory.set(node.identificator, iterator + 1)
+        if iterator >= end_index:
             return False
         return True
-
-    ''' @when(AST.Rows)
-     def visit(self, node):
-         rows_list = []
-         for row in node.row_elems:
-             vector = self.visit(row)
-             if isinstance(vector, AST.Rows):
-                 real_vector = self.visit(vector)
-                 rows_list.append(real_vector)
-             else:
-                 rows_list.append(vector)
-         return rows_list
-    '''
 
     @when(AST.Rows)
     def visit(self, node):
@@ -205,7 +196,7 @@ class Interpreter(object):
 
     @when(AST.Id)
     def visit(self, node):
-        return self.globalMemory.get(str(node.name))
+        return self.global_memory.get(str(node.name))
 
     @when(AST.Str)
     def visit(self, node):

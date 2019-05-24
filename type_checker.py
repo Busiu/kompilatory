@@ -141,13 +141,13 @@ class TypeChecker(NodeVisitor):
 
     def visit_Conditional(self, node):
         self.visit(node.conditional)
-        if node.condSt == 'for' or node.condSt == 'while':
+        if node.cond_st == 'for' or node.cond_st == 'while':
             was_in_loop = self.in_loop
             self.in_loop = True
         self.visit(node.block1)
         if node.block2:
             self.visit(node.block2)
-        if node.condSt == 'for' or node.condSt == 'while':
+        if node.cond_st == 'for' or node.cond_st == 'while':
             self.in_loop = was_in_loop
 
     def visit_Block(self, node):
