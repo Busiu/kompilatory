@@ -1,0 +1,9 @@
+# assignment operators
+# binary operators
+# transposition
+
+D1 = A.+B.T ; # add element-wise A with transpose of B
+D2 -= A.-B.T ; # substract element-wise A with transpose of B
+D3 *= A.*B.T ; # multiply element-wise A with transpose of B
+D4 /= A./B.T ; # divide element-wise A with transpose of B
+
